@@ -58,9 +58,14 @@ SmallFSFile pokeyaudiofile;
 #define JOYSTICKB_8 0
 #define JOYSTICKB_9 2
 
+#define LED1 7
+#define LED2 6
+#define LED3 5
+#define LED4 4
+
 int testOut[] = { 
-    PS2A_CLK,PS2A_DAT,JOYSTICKA_1,JOYSTICKA_2,JOYSTICKA_3,JOYSTICKA_4,JOYSTICKA_5,JOYSTICKA_6,JOYSTICKA_8,JOYSTICKA_9};       // Test pins of joystick A and ps/2 A that act as outputs
-int outCount = 10;           // the number of pins (i.e. the length of the array)
+    PS2A_CLK,PS2A_DAT,JOYSTICKA_1,JOYSTICKA_2,JOYSTICKA_3,JOYSTICKA_4,JOYSTICKA_5,JOYSTICKA_6,JOYSTICKA_8,JOYSTICKA_9, LED1, LED2, LED3, LED4};       // Test pins of joystick A and ps/2 A that act as outputs
+int outCount = 14;           // the number of pins (i.e. the length of the array)
 
 int testIn[] = { 
     PS2B_CLK,PS2B_DAT,JOYSTICKB_1,JOYSTICKB_2,JOYSTICKB_3,JOYSTICKB_4,JOYSTICKB_5,JOYSTICKB_6,JOYSTICKB_8,JOYSTICKB_9};       // Test pins of joystick and ps/2 that act as inputs
@@ -68,6 +73,8 @@ int inCount = 10;           // the number of pins (i.e. the length of the array)
 
 static int tick = 0;
 static int tickmax = 10;
+
+int ledState = HIGH;
 
 unsigned char lval[5],cval[5];
 
@@ -293,8 +300,8 @@ void loop()
         setStatus(JOYSTICKB_4, 100, 40, "J4");
         setStatus(JOYSTICKB_5, 100, 50, "J5");
         setStatus(JOYSTICKB_6, 100, 60, "J6");
-        setStatus(JOYSTICKB_9, 100, 70, "J9");
-        setStatus(JOYSTICKB_8, 100, 80, "J8");  
+        setStatus(JOYSTICKB_8, 100, 70, "J8");
+        //setStatus(JOYSTICKB_9, 100, 80, "J9");  
         
         //Blink LED's
 
@@ -316,6 +323,11 @@ void loop()
              
 
 	delay(20);
+        ledState = !ledState;
+        digitalWrite(LED1, ledState);
+        digitalWrite(LED2, ledState);
+        digitalWrite(LED3, ledState);
+        digitalWrite(LED4, ledState);        
 }
 
 void setup()
@@ -332,29 +344,13 @@ void setup()
 	pinModePPS(AUDIOPINEXTRA, HIGH);
 #endif
 
-//	pinMode(PS2A_CLK,OUTPUT);
-//	digitalWrite(PS2A_CLK,HIGH);
-//	pinMode(PS2B_CLK,INPUT);
-//
-//	pinMode(PS2A_DAT,OUTPUT);
-//	digitalWrite(PS2A_DAT,HIGH);
-//	pinMode(PS2B_DAT,INPUT);
-//
-//int testOut[] = { 
-//    13,12,40,42,43,45,47,41,44,46};       // Test pins of joystick and ps/2 that act as outputs
-//int outCount = 10;           // the number of pins (i.e. the length of the array)
-//
-//int testIn[] = { 
-//    33,32,28,30,31,1,3,26,0,2};       // Test pins of joystick and ps/2 that act as inputs
-//int inCount = 10;           // the number of pins (i.e. the length of the array)
-
         // initialize ps2 A and joystick A as HIGH outputs:
         for (int thisPin = 0; thisPin <= outCount; thisPin++)  {
           pinMode(testOut[thisPin], OUTPUT); 
           digitalWrite(testOut[thisPin],HIGH);     
         }
         
-        // initialize the pushbutton pin as an input:
+        // initialize ps2 B, joystick B and pushbutton pins as inputs:
         for (int thisPin = 0; thisPin <= inCount; thisPin++)
           pinMode(testIn[thisPin], INPUT); 
 
@@ -383,6 +379,8 @@ void setup()
         VGA.printtext(10,10, "Left");
         VGA.printtext(10,20, "Right");
         VGA.printtext(10,30, "Down");
+        
+        VGA.printtext(0, 110, "Arcade MegaWing Test");
 
 	INTRMASK = BIT(INTRLINE_TIMER0); // Enable Timer0 interrupt
 
