@@ -14,6 +14,9 @@
  by Jack Gassett from existing Arduino code snippets
  http://www.gadgetfactory.net
  
+ 11/19/2012 Jack Gassett
+   -Added LED1 blinking
+ 
  This example code is in the public domain.
  */
 
@@ -21,8 +24,8 @@
 #define PORTC GPIODATA(1)
 
 int ledPins[] = { 
-  0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46  };       // an array of pin numbers to which LEDs are attached
-int ledCount = 24;           // the number of pins (i.e. the length of the array)
+  0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 49  };       // an array of pin numbers to which LEDs are attached
+int ledCount = 25;           // the number of pins (i.e. the length of the array)
 
 int buttonPins[] = { 
   1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 45, 47 };       // an array of pin numbers to which Buttons are attached
@@ -260,4 +263,5 @@ void loop(){
       digitalWrite(ledPins[thisPin], ledState); 
     }
   }
+  digitalWrite(49,ledState);  //For LED1
 }

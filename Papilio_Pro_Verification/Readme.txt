@@ -4,6 +4,9 @@ Test Plan Home Page:
 http://www.gadgetfactory.net/opmanuals/index.php?n=Main.PapilioPro
 
 CHANGELOG
+11/19/2012 Version 1.4.1
+	Added LED1 blinking.
+
 9/26/2012 Version 1.4
 	Converted from the Papilio Plus for the Papilio Pro.
 
