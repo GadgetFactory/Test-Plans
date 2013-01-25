@@ -1,7 +1,0 @@
-Exception: STATUS_ACCESS_VIOLATION at eip=6102048B
-eax=00D26BD0 ebx=61243CD4 ecx=765F0F81 edx=003541B8 esi=00000000 edi=0028F9E8
-ebp=61020C00 esp=0028C7B8 program=C:\Users\killian\Dropbox\GadgetFactory\Arduino_Sketches\Test_Plans\Arcade_MegaWing_Verification\bin\bash.exe, pid 5692, thread main
-cs=0023 ds=002B es=002B fs=0053 gs=002B ss=002B
-Stack trace:
-Frame     Function  Args
-End of stack trace

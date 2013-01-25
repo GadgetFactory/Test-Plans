@@ -17,7 +17,7 @@ COM_PORT=COM11
 				;;	
 			XC3S500E)
 				echo "Programming a Papilio One 500K"
-				bitfile=zpuino-ZB2-PapilioOne-S3E500-HQVGA-8bit-ArcadeWing.bit
+				bitfile=Arcade-MegaWing-TestPlan-1.2-zpuino-1.0-PapilioOne-S3E500-HQVGA-8bit-ArcadeWing.bit
 				bscan_bitfile=bscan_spi_xc3s500e.bit
 				;;
 			XC6SLX9)
@@ -32,7 +32,7 @@ COM_PORT=COM11
 		./papilio-prog.exe -v -f $bitfile -b $bscan_bitfile -sa -r
 		#Cause the Papilio to restart
 		./papilio-prog.exe -c
-		./zpuinoprogrammer.exe -s 1000000 -d\\.\\$COM_PORT -bArcade_MegaWing_Verification.bin -R -esmallfs.dat
+		#./zpuinoprogrammer.exe -s 1000000 -d\\.\\$COM_PORT -bArcade_MegaWing_Verification.bin -R -esmallfs.dat
 		return_value=$?
 
 		

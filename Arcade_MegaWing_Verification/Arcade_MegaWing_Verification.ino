@@ -27,7 +27,7 @@ SmallFSFile ymaudiofile;
 SmallFSFile pokeyaudiofile;
 
 #define AUDIOPIN WING_A_15
-#define AUDIOPINEXTRA WING_A_13
+#define AUDIOPINEXTRA WING_A_14
 
 #define BUTTON_DOWN 26 /* WING_B_10 */
 #define BUTTON_UP 25 /* WING_B_9 */
@@ -68,8 +68,8 @@ int testOut[] = {
 int outCount = 14;           // the number of pins (i.e. the length of the array)
 
 int testIn[] = { 
-    PS2B_CLK,PS2B_DAT,JOYSTICKB_1,JOYSTICKB_2,JOYSTICKB_3,JOYSTICKB_4,JOYSTICKB_5,JOYSTICKB_6,JOYSTICKB_8,JOYSTICKB_9};       // Test pins of joystick and ps/2 that act as inputs
-int inCount = 10;           // the number of pins (i.e. the length of the array)
+    BUTTON_RES,PS2B_CLK,PS2B_DAT,JOYSTICKB_1,JOYSTICKB_2,JOYSTICKB_3,JOYSTICKB_4,JOYSTICKB_5,JOYSTICKB_6,JOYSTICKB_8,JOYSTICKB_9};       // Test pins of joystick and ps/2 that act as inputs
+int inCount = 11;           // the number of pins (i.e. the length of the array)
 
 static int tick = 0;
 static int tickmax = 10;
@@ -335,23 +335,24 @@ void setup()
 
 	pinMode(AUDIOPIN,OUTPUT);
 	digitalWrite(AUDIOPIN,HIGH);
-	outputPinForFunction(AUDIOPIN, 14);
+	outputPinForFunction(AUDIOPIN, 8);
 	pinModePPS(AUDIOPIN, HIGH);
 
 #ifdef AUDIOPINEXTRA
 	pinMode(AUDIOPINEXTRA,OUTPUT);
-	outputPinForFunction(AUDIOPINEXTRA, 14);
+        digitalWrite(AUDIOPINEXTRA,HIGH);
+	outputPinForFunction(AUDIOPINEXTRA, 8);
 	pinModePPS(AUDIOPINEXTRA, HIGH);
 #endif
 
         // initialize ps2 A and joystick A as HIGH outputs:
-        for (int thisPin = 0; thisPin <= outCount; thisPin++)  {
+        for (int thisPin = 0; thisPin < outCount; thisPin++)  {
           pinMode(testOut[thisPin], OUTPUT); 
           digitalWrite(testOut[thisPin],HIGH);     
         }
         
         // initialize ps2 B, joystick B and pushbutton pins as inputs:
-        for (int thisPin = 0; thisPin <= inCount; thisPin++)
+        for (int thisPin = 0; thisPin < inCount; thisPin++)
           pinMode(testIn[thisPin], INPUT); 
 
 	VGA.clear();
@@ -361,7 +362,7 @@ void setup()
 
 	if (SmallFS.begin()<0) {
 		Serial.println("No SmalLFS found, aborting.");
-		while(1);
+		//while(1);
 	}
 
 
