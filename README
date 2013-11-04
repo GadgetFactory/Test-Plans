@@ -1,9 +1,14 @@
 Test plans for Gadget Factory Open Source Hardware. - Current Version 1.2
 
 CHANGELOG
+11/4/2013 Version 1.3 Added RetroCade Synth MegaWing Version 1.1
+
 5/2/2013 Version 1.2 Added LogicStart MegaWing Version 1.0
 	Includes source files and a bat file to load test onto Papilio One 500K.
 
+Test Plan for RetroCade Synth MegaWing is located at:
+http://www.gadgetfactory.net/opmanuals/index.php?n=Main.RetroCadeSynthMegaWing
+	
 Test Plan for LogicStart MegaWing is located at:
 http://www.gadgetfactory.net/opmanuals/index.php?n=Main.LogicStartMegaWing
 
