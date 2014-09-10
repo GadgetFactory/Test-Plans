@@ -46,7 +46,7 @@ sleep 1
 		echo -e "\e[1;33mWriting Fuses to ATmega32u4\e[0m"
 		./avrdude -q -q -patmega32u4 -cstk500v1 -P$COMPORT -b57600 -e -Ulock:w:0x3F:m -Uefuse:w:0xcb:m -Uhfuse:w:0xd8:m -Ulfuse:w:0xff:m
 		echo -e "\e[1;33mLoading Bootloader to ATmega32u4\e[0m"
-		echo -e "\e[1;31mPlease verify that you see RX, TX, and LED LEDs Light up.\e[0m"
+		echo -e "\e[1;31mPlease verify that you see RX, TX, and LED LEDs Light up. \e[0m"
 		./avrdude  -q -q -patmega32u4 -cstk500v1 -P$COMPORT -b57600 -Uflash:w:Caterina-Papilio-DUO.hex:i -Ulock:w:0x2F:m
 		sleep 5
 		echo -e "\e[1;31mCheck the list of COM PORTS and make sure Papilio DUO bootloader shows up.\e[0m"
