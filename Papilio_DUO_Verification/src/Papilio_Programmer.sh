@@ -7,6 +7,13 @@ COMPORT=`./listComPorts.exe -papilio | ./gawk '{print $1}'`
 #Uncomment this if you want to override the com port - in case it does not find it correctly
 #COMPORT=COM6
 
+./listComPorts.exe -papilio > /dev/null
+return_value=$?
+if [ $return_value == 1 ] #If no Papilio COM Port found then show error.
+then
+	./dialog --timeout 5 --msgbox "No Papilio COM Port detected. Manually set the COM port in src/Papilio_Programmer.sh" 15 55
+fi	
+
 # putty.exe -serial $COMPORT &
 sleep 1
 		echo -e "\e[1;33mStarting Papilio DUO Test\e[0m"
@@ -51,11 +58,19 @@ sleep 1
 		echo -e "\e[1;33mWriting Fuses to ATmega32u4\e[0m"
 		./avrdude -q -q -patmega32u4 -cstk500v1 -P$COMPORT -b57600 -e -Ulock:w:0x3F:m -Uefuse:w:0xcb:m -Uhfuse:w:0xd8:m -Ulfuse:w:0xff:m
 		echo -e "\e[1;33mLoading Bootloader to ATmega32u4\e[0m"
-		echo -e "\e[1;31mPlease verify that you see RX, TX, and LED LEDs Light up. \e[0m"
+		echo -e "\e[1;31mPlease verify that you see LED, RX, and TX LEDs Light up. \e[0m"
 		./avrdude  -q -q -patmega32u4 -cstk500v1 -P$COMPORT -b57600 -Uflash:w:Caterina-Papilio-DUO.hex:i -Ulock:w:0x2F:m
 		sleep 5
-		echo -e "\e[1;31mCheck the list of COM PORTS and make sure Papilio DUO bootloader shows up.\e[0m"
-		./listComPorts.exe		
+		#echo -e "\e[1;31mCheck the list of COM PORTS and make sure Papilio DUO bootloader shows up.\e[0m"
+		#./listComPorts.exe	
+		BOOTLOADERCOMPORT=`./listComPorts.exe -arduino`
+		return_value=$?
+		echo -e "\e[1;33mPapilio DUO Arduino bootloader detected on \e[1;31m$BOOTLOADERCOMPORT\e[0m"
+		if [ $return_value == 1 ] #If no arduino bootloader found then show error.
+		then
+			./dialog --timeout 5 --msgbox "No Arduino bootloader detected on the ATmega32u4. Please make sure the microUSB cable is plugged in, otherwise this is a fail for the Test Plan." 15 55
+			read -n1 -r -p "No Arduino bootloader detected, Test Plan failed. Press any key to continue...\e[0m" key
+		fi	
 			
 #####################################################################################################				
 		echo -e "\e[1;33mLoading Memory and IO test to FPGA\e[0m"
