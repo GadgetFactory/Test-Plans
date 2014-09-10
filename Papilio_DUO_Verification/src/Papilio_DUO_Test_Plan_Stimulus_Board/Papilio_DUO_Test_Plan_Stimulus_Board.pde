@@ -34,6 +34,11 @@ void setup() {
 //  }  
 //  
   pinMode(0,INPUT);
+  
+  //Disable the ISP pins
+  pinMode(11,INPUT);
+  pinMode(12,INPUT);
+  pinMode(13,INPUT);
    
      
 }

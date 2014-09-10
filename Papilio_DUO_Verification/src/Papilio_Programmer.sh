@@ -63,14 +63,19 @@ sleep 1
 		sleep 5
 		#echo -e "\e[1;31mCheck the list of COM PORTS and make sure Papilio DUO bootloader shows up.\e[0m"
 		#./listComPorts.exe	
-		BOOTLOADERCOMPORT=`./listComPorts.exe -arduino`
+		BOOTLOADERCOMPORT=`./listComPorts.exe -arduino | ./gawk '{print $1}'`
 		return_value=$?
 		echo -e "\e[1;33mPapilio DUO Arduino bootloader detected on \e[1;31m$BOOTLOADERCOMPORT\e[0m"
 		if [ $return_value == 1 ] #If no arduino bootloader found then show error.
 		then
 			./dialog --timeout 5 --msgbox "No Arduino bootloader detected on the ATmega32u4. Please make sure the microUSB cable is plugged in, otherwise this is a fail for the Test Plan." 15 55
-			read -n1 -r -p "No Arduino bootloader detected, Test Plan failed. Press any key to continue...\e[0m" key
+			read -n1 -r -p "No Arduino bootloader detected, Test Plan failed. Press any key to continue..." key
 		fi	
+		
+		#Loading Blink sketch to ATmega32u4
+		sleep 5
+		echo -e "\e[1;33mLoading an example blink sketch to ATmega32u4\e[0m"
+		./avrdude -q -q -patmega32u4 -cavr109 -P$BOOTLOADERCOMPORT -b57600 -D -Uflash:w:Papilio_DUO_AVR_Blink.cpp.hex:i
 			
 #####################################################################################################				
 		echo -e "\e[1;33mLoading Memory and IO test to FPGA\e[0m"
