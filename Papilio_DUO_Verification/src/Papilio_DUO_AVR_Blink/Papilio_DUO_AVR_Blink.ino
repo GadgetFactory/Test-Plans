@@ -10,7 +10,8 @@
 int led = 13;
 
 // the setup routine runs once when you press reset:
-void setup() {                
+void setup() {         
+   delay(3000);  
   // initialize the digital pin as an output.
   pinMode(led, OUTPUT);    
    Serial.begin(9600); 
