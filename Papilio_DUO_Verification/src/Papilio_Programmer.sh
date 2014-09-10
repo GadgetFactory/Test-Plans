@@ -2,11 +2,16 @@
 # Creative Commons Attribution license
 # Made for the Papilio FPGA boards
 
-COMPORT=COM6
+#Find the papilio FPGA com port
+COMPORT=`./listComPorts.exe -papilio | ./gawk '{print $1}'`
+#Uncomment this if you want to override the com port - in case it does not find it correctly
+#COMPORT=COM6
 
 # putty.exe -serial $COMPORT &
 sleep 1
 		echo -e "\e[1;33mStarting Papilio DUO Test\e[0m"
+		echo -e "\e[1;33mPapilio FPGA detected on \e[1;31m$COMPORT.\e[0m"
+		echo -e "\e[1;31mIf the correct COM port is not automatically detected then please open src/Papilio_Programmer.sh and specify the COM port manually.\e[0m"
 		# Find device id and choose appropriate bscan bit file
 	
 		device_id=`./papilio-prog.exe -j | ./gawk '{print $9}'`
