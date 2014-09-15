@@ -2,6 +2,15 @@
 # Creative Commons Attribution license
 # Made for the Papilio FPGA boards
 
+echo -e "\e[1;33mStarting Papilio DUO Test\e[0m"
+
+#erase any FTDI eeprom to make sure we are at ground 0
+#./FT_Prog-CmdLine scan eras 0 cycl 0
+#################################################
+echo -e "\e[1;33mWriting FT2232H eeprom settings\e[0m"
+./FT_Prog-CmdLine scan prog 0 ft2232_eeprom.xml cycl 0
+sleep 4
+
 #Find the papilio FPGA com port
 COMPORT=`./listComPorts.exe -papilio | ./gawk '{print $1}'`
 #Uncomment this if you want to override the com port - in case it does not find it correctly
@@ -16,7 +25,6 @@ fi
 
 # putty.exe -serial $COMPORT &
 sleep 1
-		echo -e "\e[1;33mStarting Papilio DUO Test\e[0m"
 		echo -e "\e[1;33mPapilio FPGA detected on \e[1;31m$COMPORT.\e[0m"
 		echo -e "\e[1;31mIf the correct COM port is not automatically detected then please open src/Papilio_Programmer.sh and specify the COM port manually.\e[0m"
 		# Find device id and choose appropriate bscan bit file
@@ -63,7 +71,7 @@ sleep 1
 		sleep 5
 		#echo -e "\e[1;31mCheck the list of COM PORTS and make sure Papilio DUO bootloader shows up.\e[0m"
 		#./listComPorts.exe	
-		BOOTLOADERCOMPORT=`./listComPorts.exe -arduino | ./gawk '{print $1}'`
+		BOOTLOADERCOMPORT=`./listComPorts.exe -bootloader | ./gawk '{print $1}'`
 		return_value=$?
 		echo -e "\e[1;33mPapilio DUO Arduino bootloader detected on \e[1;31m$BOOTLOADERCOMPORT\e[0m"
 		if [ $return_value == 1 ] #If no arduino bootloader found then show error.
@@ -76,6 +84,13 @@ sleep 1
 		sleep 5
 		echo -e "\e[1;33mLoading an example blink sketch to ATmega32u4\e[0m"
 		./avrdude -q -q -patmega32u4 -cavr109 -P$BOOTLOADERCOMPORT -b57600 -D -Uflash:w:Papilio_DUO_AVR_Blink.cpp.hex:i
+		return_value=$?
+		#echo -e "\e[1;33mPapilio DUO Arduino sketch detected on \e[1;31m$BOOTLOADERCOMPORT\e[0m"
+		if [ $return_value == 1 ] #If no arduino sketch found then show error.
+		then
+			./dialog --timeout 5 --msgbox "No Arduino sketch loaded on the ATmega32u4. Please make sure the microUSB cable is plugged in, otherwise this is a fail for the Test Plan." 15 55
+			read -n1 -r -p "No Arduino sketch loaded, Test Plan failed. Press any key to continue..." key
+		fi		
 			
 #####################################################################################################				
 		echo -e "\e[1;33mLoading Memory and IO test to FPGA\e[0m"
@@ -87,7 +102,7 @@ sleep 1
 		
 if [ $return_value == 1 ] #If programming failed then show error.
 then
-	./dialog --timeout 5 --msgbox "The bit file failed to program to the Papilio, please check any issues with the FTDI chip, USB connector, voltage regulators, or solder joints.\e[0m" 15 55
+	./dialog --timeout 5 --msgbox "The bit file failed to program to the Papilio, please check any issues with the FTDI chip, USB connector, voltage regulators, or solder joints." 15 55
 	read -n1 -r -p "Press any key to continue...\e[0m" key
 fi		
 		
@@ -107,8 +122,8 @@ echo -e "\e[1;31m\e[1;31mConnect the Stimulus board now and complete the I/O and
 		
 if [ $return_value == 1 ] #If programming failed then show error.
 then
-	./dialog --timeout 5 --msgbox "The bit file failed to program to the Papilio, please check any issues with the FTDI chip, USB connector, voltage regulators, or solder joints.\e[0m" 15 55
-	read -n1 -r -p "Press any key to continue...\e[0m" key
+	./dialog --timeout 5 --msgbox "The bit file failed to program to the Papilio, please check any issues with the FTDI chip, USB connector, voltage regulators, or solder joints" 15 55
+	read -n1 -r -p "Press any key to continue..." key
 fi		
 
 read -n1 -r -p "Verification is complete, please press any key to quit." key
