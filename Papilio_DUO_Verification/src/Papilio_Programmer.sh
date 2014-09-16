@@ -2,7 +2,7 @@
 # Creative Commons Attribution license
 # Made for the Papilio FPGA boards
 
-echo -e "\e[1;33mStarting Papilio DUO Test\e[0m"
+echo -e "\e[1;33mStarting Papilio DUO Test Plan\e[0m"
 
 #erase any FTDI eeprom to make sure we are at ground 0
 #./FT_Prog-CmdLine scan eras 0 cycl 0
@@ -63,6 +63,7 @@ sleep 1
 		#Load the Papilio DUO bootloader to the ATmega32u4
 		echo -e "\e[1;33mLoading ArduinoISP\e[0m"
 		./papilio-prog.exe -v -f $arduino_ISP -v
+		sleep 3
 		echo -e "\e[1;33mWriting Fuses to ATmega32u4\e[0m"
 		./avrdude -q -q -patmega32u4 -cstk500v1 -P$COMPORT -b57600 -e -Ulock:w:0x3F:m -Uefuse:w:0xcb:m -Uhfuse:w:0xd8:m -Ulfuse:w:0xff:m
 		echo -e "\e[1;33mLoading Bootloader to ATmega32u4\e[0m"
