@@ -9,7 +9,7 @@ echo -e "\e[1;33mStarting Papilio DUO Test Plan\e[0m"
 #################################################
 echo -e "\e[1;33mWriting FT2232H eeprom settings\e[0m"
 ./FT_Prog-CmdLine scan prog 0 ft2232_eeprom.xml cycl 0
-sleep 3
+./sleep 3
 ./fteeprom.exe Papilio_DUO_EEPROM.hex
 return_value=$?
 if [ $return_value == 1 ] #If EEPROM write failed then show error.
@@ -19,7 +19,7 @@ then
 	exit
 fi	
 ./FT_Prog-CmdLine scan cycl 0
-sleep 3
+./sleep 3
 
 #Find the papilio FPGA com port
 COMPORT=`./listComPorts.exe -papilio | ./gawk '{print $1}'`
@@ -34,7 +34,7 @@ then
 fi	
 
 # putty.exe -serial $COMPORT &
-sleep 1
+./sleep 1
 		echo -e "\e[1;33mPapilio FPGA detected on \e[1;31m$COMPORT.\e[0m"
 		echo -e "\e[1;31mIf the correct COM port is not automatically detected then please open src/Papilio_Programmer.sh and specify the COM port manually.\e[0m"
 		# Find device id and choose appropriate bscan bit file
@@ -73,13 +73,13 @@ sleep 1
 		#Load the Papilio DUO bootloader to the ATmega32u4
 		echo -e "\e[1;33mLoading ArduinoISP\e[0m"
 		./papilio-prog.exe -v -f $arduino_ISP -v
-		sleep 3
+		./sleep 3
 		echo -e "\e[1;33mWriting Fuses to ATmega32u4\e[0m"
 		./avrdude -q -q -patmega32u4 -cstk500v1 -P$COMPORT -b57600 -e -Ulock:w:0x3F:m -Uefuse:w:0xcb:m -Uhfuse:w:0x98:m -Ulfuse:w:0xff:m
 		echo -e "\e[1;33mLoading Bootloader to ATmega32u4\e[0m"
 		echo -e "\e[1;31mPlease verify that you see LED, RX, and TX LEDs Light up. \e[0m"
-		./avrdude  -q -q -patmega32u4 -cstk500v1 -P$COMPORT -b57600 -Uflash:w:Caterina-Papilio-DUO.hex:i -Ulock:w:0x2F:m
-		sleep 5
+		./avrdude -F -q -q -patmega32u4 -cstk500v1 -P$COMPORT -b57600 -Uflash:w:Caterina-Papilio-DUO.hex:i -Ulock:w:0x2F:m
+		./sleep 5
 		#echo -e "\e[1;31mCheck the list of COM PORTS and make sure Papilio DUO bootloader shows up.\e[0m"
 		#./listComPorts.exe	
 		BOOTLOADERCOMPORT=`./listComPorts.exe -bootloader | ./gawk '{print $1}'`
@@ -92,9 +92,9 @@ sleep 1
 		fi	
 		
 		#Loading Blink sketch to ATmega32u4
-		sleep 5
+		./sleep 5
 		echo -e "\e[1;33mLoading an example blink sketch to ATmega32u4\e[0m"
-		./avrdude -q -q -patmega32u4 -cavr109 -P$BOOTLOADERCOMPORT -b57600 -D -Uflash:w:Papilio_DUO_AVR_Blink.cpp.hex:i
+		./avrdude -F -q -q -patmega32u4 -cavr109 -P$BOOTLOADERCOMPORT -b57600 -D -Uflash:w:Papilio_DUO_AVR_Blink.cpp.hex:i
 		return_value=$?
 		#echo -e "\e[1;33mPapilio DUO Arduino sketch detected on \e[1;31m$BOOTLOADERCOMPORT\e[0m"
 		if [ $return_value == 1 ] #If no arduino sketch found then show error.
