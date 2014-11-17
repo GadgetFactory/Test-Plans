@@ -82,7 +82,7 @@ void ioTest()
   GPIOTRIS(0) = 0xFFFFFFFF;
   GPIOTRIS(1) = 0xFFFFFFFF;
   pinMode(0, OUTPUT); 
-  testport(&PORTAB, "AL-BH", 0x55557D54, 0xAAAABAAB);
+  testport(&PORTAB, "AL-BH", 0x55555D54, 0xAAAA9AAB);
   testport(&PORTC, "CL-CH", 0x255555, 0x2AAAAA);
   Serial.println();
   GPIOTRIS(0) = 0xAAAAAAAA;
