@@ -20,124 +20,70 @@
  This example code is in the public domain.
  */
 
-#define PORTAB GPIODATA(0)
-#define PORTC GPIODATA(1)
-
-int ledPins[] = { 
-  0, 2, 4, 6, 15, 17, 19, 21, 25, 29, 33, 37, 41, 45, 49, 53, 22, 26, 30, 34, 38, 42, 46, 50  };       // an array of pin numbers to which LEDs are attached
-int ledCount = 24;           // the number of pins (i.e. the length of the array)
-
-int buttonPins[] = { 
-  1, 3, 5, 7, 14, 16, 18, 20, 23, 27, 31, 35, 39, 43, 47, 51, 24, 28, 32, 36, 40, 44, 48, 52 };       // an array of pin numbers to which Buttons are attached
-int buttonCount = 24;           // the number of pins (i.e. the length of the array)
-
 // variables will change:
-int buttonState = 0;         // variable for reading the pushbutton status
 int thisPin;
-int ledState = LOW;
 int incomingByte = 0;
-
-// first visible ASCIIcharacter '!' is number 33:
-int thisByte = 33; 
-// you can also write ASCII characters in single quotes.
-// for example. '!' is the same as 33, so you could also use this:
-//int thisByte = '!'; 
+int pinCount=54;
+boolean ioPass = true;
+int previousPinState = LOW;
 
 void setup() {
-  // initialize the LED pins as an output:
-  for (int thisPin = 0; thisPin < ledCount; thisPin++)  {
-    pinMode(ledPins[thisPin], OUTPUT);  
-  }
-  
-  // initialize the pushbutton pin as an input:
-  for (int thisPin = 0; thisPin < ledCount; thisPin++)  {
-    pinMode(buttonPins[thisPin], INPUT);      
+
+  for (int thisPin = 1; thisPin < pinCount; thisPin++)  {
+    pinMode(thisPin, INPUT);
   }   
   
-  //Delay for 1 seconds to prevent detection as a serial mouse.
-  delay(2000);
+  pinMode(0, OUTPUT);   
   
   //Setup Serial port and send out Title
   Serial.begin(9600); 
 
   //Start with a Mem Test
-  memtest();
-  ioTest();
-  
-  pinMode(13, OUTPUT);
-  digitalWrite(13, HIGH);
-
-  pinMode(21, OUTPUT);
-  digitalWrite(21, HIGH);
-
-  // prints title with ending line break 
-  Serial.println("ASCII Table ~ Character Map"); 
+  //memtest();
+  //ioTest();
 }
 
 void ioTest()
 {
   Serial.println("Starting I/O Test");
   Serial.println("The I/O Test will only be succesful if a stimulus board is connected.");
-  Serial.println("Do not be alarmed by a failure if a stimulus board is not connected.");  
-  GPIOTRIS(0) = 0xFFFFFFFF;
-  GPIOTRIS(1) = 0xFFFFFFFF;
-  pinMode(0, OUTPUT); 
-  testport(&PORTAB, "AL-BH", 0x55555D54, 0xAAAA9AAB);
-  testport(&PORTC, "CL-CH", 0x255555, 0x2AAAAA);
-  Serial.println();
-  GPIOTRIS(0) = 0xAAAAAAAA;
-  GPIOTRIS(1) = 0xAAAAAAAA;  
-  delay(1000);
-    // initialize the LED pins as an output:
-  for (int thisPin = 0; thisPin < ledCount; thisPin++)  {
-    pinMode(ledPins[thisPin], OUTPUT);  
-  }
+  Serial.println("Do not be alarmed by a failure if a stimulus board is not connected."); 
   
-  // initialize the pushbutton pin as an input:
-  for (int thisPin = 0; thisPin < ledCount; thisPin++)  {
-    pinMode(buttonPins[thisPin], INPUT);      
-  } 
-}
-
-void testport(volatile uint32_t* port, char pName[2], uint32_t check1, uint32_t check2) {
-    int status = 0;
-    int temp;
-    digitalWrite(0, LOW);
-    delay(10);
-      //Serial.println(*port, HEX);    
-    if (*port == check1) {
-      status = 1;
-    }
-    else
-      temp = *port;
+  for (int thisPin = 1; thisPin < 11; thisPin++)  {
     digitalWrite(0, HIGH);
     delay(10);
-      //Serial.println(*port, HEX);    
-    if (*port == check2 && status==1){
-      Serial.print(pName);
-      Serial.println(" Passed");}
-    else{
-      Serial.print(pName);
-      Serial.println(" Failed");
-      Serial.print("Should be:");
-      Serial.print(check1, HEX);
-      Serial.print(" ");
-      Serial.print(check2, HEX);
-      Serial.print(" "); 
-      Serial.print(check1, BIN);
-      Serial.print(" ");
-      Serial.println(check2, BIN);      
-
-      Serial.print("Actual   :");
-      Serial.print(temp, HEX);
-      Serial.print(" ");
-      Serial.print(*port, HEX);
-      Serial.print(" "); 
-      Serial.print(temp, BIN);
-      Serial.print(" ");
-      Serial.println(*port, BIN);       
-      Serial.println();    
-    }
+    previousPinState = digitalRead(thisPin);
+    digitalWrite(0, LOW);
+    delay(10);
+    if (digitalRead(thisPin)==previousPinState){  //The pin should have toggled when we changed pin 0, if we read the same value then it did not toggle and is a failure
+      Serial.print("I/O pin ");
+      Serial.print(thisPin);
+      Serial.println(" failed please check for any shorts or disconnects.");
+      ioPass = false;
+    }    
+  }   
+ 
+  for (int thisPin = 14; thisPin < pinCount; thisPin++)  {
+    digitalWrite(0, HIGH);
+    delay(10);
+    previousPinState = digitalRead(thisPin);
+    digitalWrite(0, LOW);
+    delay(10);
+    if (digitalRead(thisPin)==previousPinState){  //The pin should have toggled when we changed pin 0, if we read the same value then it did not toggle and is a failure
+      Serial.print("I/O pin ");
+      Serial.print(thisPin);
+      Serial.println(" failed please check for any shorts or disconnects.");
+      ioPass = false;
+    }    
+  }   
+  
+  if (ioPass)
+    Serial.println("IO Test Passed!");
+  else
+    Serial.println("IO Test Failed, please check the pins that reported a failure!");  
+  ioPass = true;
+  
+  Serial.println();
 }
 
 void printnibble(unsigned int c)
@@ -191,9 +137,6 @@ void memtest()
 {
 	volatile unsigned *ptr = (volatile unsigned *)0x2000;
 
-//	while (!Serial.available());
-//	Serial.read();
-
 	Serial.println("Starting memory test from 0x2000 and beyond");
 	unsigned v = *((unsigned*)0);
 	Serial.print("check value is 0x"); printhex(v); Serial.println("");
@@ -218,6 +161,7 @@ void memtest()
 void loop(){
   delay(1000);
   memtest();
+  delay(20);
   ioTest();
 
 }
