@@ -24,12 +24,12 @@
 #define PORTC GPIODATA(1)
 
 int ledPins[] = { 
-  0, 2, 4, 6, 15, 17, 19, 21, 25, 29, 33, 37, 41, 45, 49, 53, 22, 26, 30, 34, 38, 42, 46, 50  };       // an array of pin numbers to which LEDs are attached
-int ledCount = 24;           // the number of pins (i.e. the length of the array)
+  15, 17, 19, 21, 25, 29, 33, 37, 41, 45, 49, 53, 22, 26, 30, 34, 38, 42, 46, 50  };       // an array of pin numbers to which LEDs are attached
+int ledCount = 20;           // the number of pins (i.e. the length of the array)
 
 int buttonPins[] = { 
-  1, 3, 5, 7, 14, 16, 18, 20, 23, 27, 31, 35, 39, 43, 47, 51, 24, 28, 32, 36, 40, 44, 48, 52 };       // an array of pin numbers to which Buttons are attached
-int buttonCount = 24;           // the number of pins (i.e. the length of the array)
+  14, 16, 18, 20, 23, 27, 31, 35, 39, 43, 47, 51, 24, 28, 32, 36, 40, 44, 48, 52 };       // an array of pin numbers to which Buttons are attached
+int buttonCount = 20;           // the number of pins (i.e. the length of the array)
 
 // variables will change:
 int buttonState = 0;         // variable for reading the pushbutton status
@@ -52,6 +52,11 @@ void setup() {
   // initialize the pushbutton pin as an input:
   for (int thisPin = 0; thisPin < ledCount; thisPin++)  {
     pinMode(buttonPins[thisPin], INPUT);      
+  } 
+
+  // initialize all of the ATmega32U4 pins as inputs so as not to interfere.
+  for (int thisPin = 0; thisPin < 14; thisPin++)  {
+    pinMode(buttonPins[thisPin], INPUT);      
   }   
   
   //Delay for 1 seconds to prevent detection as a serial mouse.
@@ -60,10 +65,6 @@ void setup() {
   //Setup Serial port and send out Title
   Serial.begin(9600); 
 
-  //Start with a Mem Test
-  memtest();
-  ioTest();
-  
   pinMode(13, OUTPUT);
   digitalWrite(13, HIGH);
 
@@ -72,31 +73,6 @@ void setup() {
 
   // prints title with ending line break 
   Serial.println("ASCII Table ~ Character Map"); 
-}
-
-void ioTest()
-{
-  Serial.println("Starting I/O Test");
-  Serial.println("The I/O Test will only be succesful if a stimulus board is connected.");
-  Serial.println("Do not be alarmed by a failure if a stimulus board is not connected.");  
-  GPIOTRIS(0) = 0xFFFFFFFF;
-  GPIOTRIS(1) = 0xFFFFFFFF;
-  pinMode(0, OUTPUT); 
-  testport(&PORTAB, "AL-BH", 0x55555554, 0xAAAAAAAB);
-  testport(&PORTC, "CL-CH", 0x255555, 0x2AAAAA);
-  Serial.println();
-  GPIOTRIS(0) = 0xAAAAAAAA;
-  GPIOTRIS(1) = 0xAAAAAAAA;  
-  delay(1000);
-    // initialize the LED pins as an output:
-  for (int thisPin = 0; thisPin < ledCount; thisPin++)  {
-    pinMode(ledPins[thisPin], OUTPUT);  
-  }
-  
-  // initialize the pushbutton pin as an input:
-  for (int thisPin = 0; thisPin < ledCount; thisPin++)  {
-    pinMode(buttonPins[thisPin], INPUT);      
-  } 
 }
 
 void testport(volatile uint32_t* port, char pName[2], uint32_t check1, uint32_t check2) {
@@ -219,8 +195,6 @@ void loop(){
   incomingByte = Serial.read();
   if (incomingByte == 109)    //Memtest if m is sent on serial port.
     memtest();
-  else if (incomingByte == 105)  //IO test if i is on serial port.
-    ioTest();
 
   //This sends the ASCII table to the serial port.
   
@@ -278,5 +252,5 @@ void loop(){
       digitalWrite(ledPins[thisPin], ledState); 
     }
   }
-  digitalWrite(13,ledState);  //For LED1
+  //digitalWrite(13,ledState);  //For LED1
 }
