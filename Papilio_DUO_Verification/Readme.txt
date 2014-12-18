@@ -6,6 +6,8 @@ http://www.gadgetfactory.net/opmanuals/index.php?n=Main.PapilioPro
 CHANGELOG
 12/17/2014 Version 1.4
 	Changed the drive strength of the FT2232H to 8mA due to some boards failing the test plan.
+	Fixed the serial number for the FT2232H
+	Increased the timeout between FT2232H EEPROM writes.
 
 11/24/2014 Version 1.3
 	Updated I/O test to operate correctly with Seeeduino ADK as the stimulus board. All disconnected pins are reported in an easier to understand way.

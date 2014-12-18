@@ -9,7 +9,7 @@ echo -e "\e[1;33mStarting Papilio DUO Test Plan\e[0m"
 #################################################
 echo -e "\e[1;33mWriting FT2232H eeprom settings\e[0m"
 ./FT_Prog-CmdLine scan prog 0 ft2232_eeprom.xml cycl 0
-./sleep 3
+./sleep 5
 ./fteeprom.exe Papilio_DUO_EEPROM.hex
 return_value=$?
 if [ $return_value == 1 ] #If EEPROM write failed then show error.
